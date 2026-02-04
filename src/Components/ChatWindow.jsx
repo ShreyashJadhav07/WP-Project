@@ -17,32 +17,49 @@ function ChatWindow() {
 
   
   const chatId =
-    userData?.id > receiverId
-      ? `${userData.id}-${receiverId}`
-      : `${receiverId}-${userData?.id}`;
+    userData?.id && receiverId
+      ? userData.id > receiverId
+        ? `${userData.id}-${receiverId}`
+        : `${receiverId}-${userData.id}`
+      : null;
 
       const menuRef = useRef(null);
 
   useEffect(() => {
+    // Ensure receiverId and current user id are available before accessing Firestore paths
+    if (!receiverId) return;
     const getUser = async () => {
-      const docRef = doc(db, "users", receiverId);
-      const docSnap = await getDoc(docRef);
+      try {
+        const docRef = doc(db, "users", receiverId);
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        setSecondUser(docSnap.data());
+        if (docSnap.exists()) {
+          setSecondUser(docSnap.data());
+        }
+      } catch (err) {
+        console.error('Error fetching user:', err);
       }
     };
 
-    const msgUnsubscribe = onSnapshot(doc(db, "user-chats", chatId), (doc) => {
-      setMsgList(doc.data()?.messages || []);
-    });
+    let unsubscribeMsgs = () => {};
+    if (chatId) {
+      try {
+        unsubscribeMsgs = onSnapshot(doc(db, "user-chats", chatId), (docSnap) => {
+          setMsgList(docSnap.data()?.messages || []);
+        });
+      } catch (err) {
+        console.error('Error subscribing to messages:', err);
+      }
+    }
 
     getUser();
 
     return () => {
-      msgUnsubscribe();
+      try {
+        unsubscribeMsgs && unsubscribeMsgs();
+      } catch (e) {}
     };
-  }, [receiverId]);
+  }, [receiverId, userData?.id, chatId]);
 
 
   const handleDeleteChat = async() => {
@@ -132,7 +149,7 @@ function ChatWindow() {
  
   if (!receiverId)
     return (
-      <section className="w-[70%] h-full flex flex-col gap-4 items-center justify-center">
+      <section className="flex-1 h-full flex flex-col gap-4 items-center justify-center px-4">
         <MessageSquareText
           className="w-28 h-28 text-gray-400"
           strokeWidth={1.2}
@@ -145,7 +162,7 @@ function ChatWindow() {
       </section>
     );
 
-  return <section className="w-[70%] h-full flex flex-col gap-4 items-center justify-center">
+  return <section className="flex-1 h-full flex flex-col gap-4 items-center justify-center">
     <div className="h-full w-full  bg-[#F2EFE9] flex flex-col">
       {/* Top bar */}
       <div className="bg-[#eff2f5] py-2 px-4 flex items-center gap-2 shadow-sm">

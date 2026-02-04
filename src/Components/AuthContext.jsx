@@ -1,8 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
-import { auth, db, storage } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 
 const AuthContext=React.createContext();
@@ -13,7 +12,6 @@ export function useAuth(){
 function AuthWrapper({children}){
     const [userData,setUserData]=useState(null);
     const [loading,setLoading]=useState(true);
-    const [isUploading,setIsUploading]=useState(false);
     const [error,setError]=useState("");
     
     useEffect(()=>{
@@ -62,51 +60,38 @@ function AuthWrapper({children}){
     }
 
     const updateName= async (newName) =>{
-        await updateDoc(doc(db,"users" ,userData.id),{
-            name:newName
-        });
+        try{
+            await updateDoc(doc(db,"users" ,userData.id),{
+                name:newName
+            });
+            setUserData(prev => ({
+                ...prev,
+                name: newName
+            }));
+        }catch(err){
+            setError(err.message);
+        }
 
     }
     const updateStatus= async (newstatus) =>{
-        await updateDoc(doc(db,"users" ,userData.id),{
-            status:newstatus
-        });
+        try{
+            await updateDoc(doc(db,"users" ,userData.id),{
+                status:newstatus
+            });
+            setUserData(prev => ({
+                ...prev,
+                status: newstatus
+            }));
+        }catch(err){
+            setError(err.message);
+        }
 
     }
 
-    const updatePhoto=async (img) =>{
-        const storageRef=ref(storage,`profile/${userData.is}`);
-        const uploadTask=uploadBytesResumable(storageRef,img);
-        uploadTask.on(
-            'state_changed',
-            () =>{
-                setIsUploading(true);
-                setError(null);
-            },
-            ()=>{
-                setIsUploading(false);
-                alert("Unable to Upload!");
-            },
-            () => {
-                getDownloadURL(uploadTask.snapshot.ref)
-                .then(async (downloadURL) =>{
-                    await updateDoc(doc(db,"users",userData.id),{
-                        profile_pic:downloadURL,
-                    });
-                    setUserData({
-                        ...userData,
-                        profile_pic:downloadURL,
-                    });
-                    setIsUploading(false);
-                    setError(null);
-                });
-            }
-
-        );
-    };
+    // photo upload removed
 
 
-    return <AuthContext.Provider value={{setUserData,userData,loading,updateName,updateStatus,updatePhoto,isUploading,error}}>
+    return <AuthContext.Provider value={{setUserData,userData,loading,updateName,updateStatus,error}}>
         {children}
     </AuthContext.Provider>
 }

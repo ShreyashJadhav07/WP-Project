@@ -49,7 +49,7 @@ function Login() {
 
         <div className='flex ml-[200px] pt-10 items-center gap-4'>
       
-        <img src= "https://whatsapp-clone-826a9.web.app/whatsapp.svg" alt='WhatsApp Logo' className='h-8'></img>
+        <img src="/whatsapp.svg" alt='WhatsApp Logo' className='h-8' />
         <div className='text-white uppercase font-medium'>WhatsApp</div>
 
         </div>
@@ -57,7 +57,7 @@ function Login() {
     </div>
     <div className='h-[calc(100vh-200px)] bg-[#eff2f5] flex justify-center items-center relative'>
                 
-                <div className='h-[80%] w-[50%] bg-white shadow-2xl flex flex-col gap-4 justify-center items-center absolute -top-[60px]'>
+                <div className='h-[80%] w-full max-w-md sm:max-w-lg bg-white shadow-2xl flex flex-col gap-4 justify-center items-center mx-auto absolute left-0 right-0 -top-[60px]'>
                 <Fingerprint className='h-20 w-20 text-[#04a784]' strokeWidth={1}/>
                
                     <div className='text-2xl font-medium mb-2'>Sign In</div>

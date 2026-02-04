@@ -4,12 +4,18 @@ import { useAuth } from './AuthContext'
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function Profile(props) {
   const navigate=useNavigate();
-  const {userData,updateName,updateStatus,updatePhoto,isUploading,error} =useAuth();
+  const {userData,updateName,updateStatus,error} =useAuth();
   const [name,setName]=useState(userData?.name|| "");
   const [status,setStatus]=useState(userData?.status || "");
+
+  useEffect(() => {
+    setName(userData?.name || "");
+    setStatus(userData?.status || "");
+  }, [userData]);
   const handleLogout=() => {
     signOut(auth);
     navigate("/login")
@@ -17,7 +23,7 @@ function Profile(props) {
 
   }
   return (
-    <div className='bg-[#eff2f5] w-[30vw] min-w-[350px] h-full '>
+    <div className='bg-[#eff2f5] w-full sm:w-11/12 md:w-1/2 lg:w-1/3 min-w-0 h-full '>
        <div className='bg-green-400 text-white py-4 text-lg px-4 flex items-center gap-6'>
             <button onClick={props.onBack}>
                 <ArrowLeft/>
@@ -25,28 +31,10 @@ function Profile(props) {
             <div>profile</div>
         </div>
 
-        <div className='flex flex-col items-center justify-center gap-8 mt-8 py-16 w-full'>
-          <label className={`group relative cursor-pointer rounded-full overflow-hidden ${isUploading ? "pointer-events-none" : ""}`}>
-          <img src={userData.profile_pic} alt='profile-picture' className='w-[160px] h-[160px] object-cover ' /> 
-          {isUploading ? (
-            <div className='absolute inset-0 flex items-center justify-center bg-black/10 z-10'>
-              <Loader2Icon className='w-6 h-6 tetx-primary-dense animate-spin z-10'/>
-            </div>
-          ) : (
-            <div className='absolute inset-0 hidden group-hover:flex items-center justify-center bg-black/30 z-10'>
-              <Edit2Icon className='w-6 h-6 text-white'/>
-            </div>
-          )}
-           <input
-       type='file'
-       accept='image/png ,image/gif,image/jpeg'
-       onChange={(e) =>{
-        updatePhoto(e.target.files?.[0]);
-       }}
-       className='hidden'
-       />
-
-      </label>
+        <div className='flex flex-col items-center justify-center gap-8 mt-4 py-16 w-full'>
+          <div className="rounded-full overflow-hidden w-[160px] h-[160px]">
+            <img src={userData?.profile_pic || '/default-user.png'} alt='profile-picture' className='w-[160px] h-[160px] object-cover rounded-full' /> 
+          </div>
 
      
        {error && <p className='text-red-500'>{error}</p>}
@@ -77,7 +65,12 @@ function Profile(props) {
           
           </div>
         </div>
-        <button onClick={handleLogout} className='text-white px-4 py-3 rounded bg-[#04a784] hover:bg-[#008069] mt-8'>Logout</button>
+        <button
+          onClick={handleLogout}
+          className='text-white px-4 py-3 rounded bg-[#04a784] hover:bg-[#008069] mt-6 sm:mt-4 md:mt-2 transform -translate-y-2 sm:-translate-y-3 w-full sm:w-auto max-w-xs mx-auto transition'
+        >
+          Logout
+        </button>
 
 
         </div>
@@ -87,3 +80,4 @@ function Profile(props) {
 }
 
 export default Profile
+

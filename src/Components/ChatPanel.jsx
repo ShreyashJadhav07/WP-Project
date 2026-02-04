@@ -44,7 +44,7 @@ function ChatPanel() {
 
 
     return (
-        <div className="bg-white w-[30vw] min-w-[350px]">
+        <div className="bg-white w-full md:w-1/3 lg:w-1/4 max-w-[380px]">
             {/* top-bar */}
             <div className="bg-[#eff2f5] py-2 px-4 border-r  flex justify-between items-center gap-2">
                 <button
@@ -80,7 +80,7 @@ function ChatPanel() {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <div className="py-4 divide-y h-full max-h-[calc(100vh-152px)] overflow-y-scroll">
+                            <div className="py-4 divide-y h-full max-h-[calc(100vh-152px)] overflow-y-scroll">
                             {filterdUsers.map(userObject => <UserCard userObject={userObject} key={userObject.id} />)}
                         </div>
                     </div>

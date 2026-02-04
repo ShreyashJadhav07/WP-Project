@@ -13,7 +13,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDr1lSZCJXQTioifanFS5SdWv7Vr0BdBUE",
   authDomain: "whatsapp-clone-c2c79.firebaseapp.com",
   projectId: "whatsapp-clone-c2c79",
-  storageBucket: "whatsapp-clone-c2c79.firebasestorage.app",
+  storageBucket: "whatsapp-clone-c2c79.appspot.com",
   messagingSenderId: "788900349183",
   appId: "1:788900349183:web:87150ec7e76790dfea38ca",
   measurementId: "G-6S0WFNT5C0"
@@ -23,6 +23,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth=getAuth(app);
-const db=getFirestore();
-const storage=getStorage();
+const db=getFirestore(app);
+const storage=getStorage(app);
 export { auth, db, storage }
