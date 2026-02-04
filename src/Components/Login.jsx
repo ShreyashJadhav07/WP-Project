@@ -49,7 +49,7 @@ function Login() {
 
         <div className='flex ml-[200px] pt-10 items-center gap-4'>
       
-        <img src="/whatsapp.svg" alt='WhatsApp Logo' className='h-8' />
+        <img src={`${import.meta.env.BASE_URL}whatsapp.svg`} alt='WhatsApp Logo' className='h-8' />
         <div className='text-white uppercase font-medium'>WhatsApp</div>
 
         </div>
